@@ -19,9 +19,24 @@
 
 # Agenda:
   * Welcome/Intros
+    * Name, occupation, hobby, purpose for taking this workshop
   * Download Tools
+    * docker
+    * kubectl
+    * minikube 
   * Overview of k8s
+    * Abstract
+    * kubectl
+    * control plane
+        * kube-api
+        * kube-scheduler
+        * kube-controller-manager
+        * kubelet
+        * kube-proxy
   * Setup MiniKube
+    * install
+    * kubectl get namespaces
+    * kubectl create -f
   * kubectl
     * multiple contexts
   * Hello World App Deployment
