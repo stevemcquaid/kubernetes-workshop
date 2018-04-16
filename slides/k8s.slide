@@ -23,208 +23,370 @@ https://github.com/stevemcquaid
 : Review the core concepts of Kubernetes
 : Everyone will download tools we need + break
 : Explore kubectl and usages
-: Deploy a hello world app on our personal clusters I've setup for you
+: Deploy a hello world app on our personal clusters
 : Discuss networking in kubernetes
 
 * Afternoon Agenda
 - 01:00   PM  (W)  Networking: Deploy Ingress Controller + Ingress Resource
-- 01:30   PM  (W)  Large Cluster: Joining Forces
+- 01:30   PM  (W)  Office Hours + Vote on Topic to discuss
 - 02:00   PM  (B)  Break: Snacks and Sodas
-- 03:00   PM  (W)  Commit to Deploy with K8s
-- 03:30   PM  (W)  Monitoring: Prometheus + App Metrics
-- 04:00   PM  (W)  Office Hours + Questions
 - 04:30   PM  (B)  Wrap
 
 : After lunch we will deploy networking resources
+: Then it will be more free-form based upon your interests. Some ideas:
 : Combine all of our clusters into a large single cluster to show failover
-: After a break, we will explore a developer workflow using kubernetes
-: Dig into how the CNCF 
+: Explore a developer workflow using Kubernetes
+: Dig into how the CNCF Project: Prometheus offers kubernetes-native metrics & alerting
+: Finally we will wrap up with time for questions and office hours if there are specfic use cases you have in mind
+
 
 * Kubernetes (K8S) Overview (9:00 - 9:45AM)
 
 * Kubernetes (K8S) Overview
-- What is K8S?
-- Why do we need it?
-- How does it work?
+- 1) What is K8S?
+- 2) Why do we need K8S?
+- 3) How does K8S work?
+
+: How many of you have used kubernetes before?
+: Let's get right into:
+: What is it?, Why do we need it?, How does it work?
 
 
 
+* 1) What is Kubernetes?
+- Open Source
+- Container Automation Framework
+- Pluggable API
+- Developed by Google
+- Abstract away underlying machines
+- Manage apps, not machines
+
+: Kubernetes is an open source project container automation framework.  It’s completely open source -- so you can go look at the code running your containers or even contribute to it. Kubernetes provides an open, pluggable API  that can work with containers across multiple cloud providers.  This means that as your applications grow, kubernetes help you manage that application (at scale) while still providing portability and options in case you need it.
+: Kubernetes is based on learnings from how Google itself has been running applications and containers, internally.  These learnings have given rise to new primitives, new ways of looking at orchestrating the cloud in order to abstract away the underlying machines.
+: So that you can Manage applications, not machines
 
 
 
+* 2) Why do we need Kubernetes?
+- Let us first understand our application
+.image images/app.png _ 900
 
-* Download Tools (9:45 - 10:00 AM)
-* Download Tools
-- kubectl
-- bash/ssh client for windows
+: Before we can talk about orchestrating the cloud we have to talk about the app itself.  How do you write it?  How do you share it?  
+: Here are two versions of an example:  one a traditional monolithic application and the same application broken up into microservices.  Both apps provide the same functionality, they send back a “hello” message and can restrict access of this services to authenticated users.
+: The first thing that is important to understand is that NEITHER approach is the ONE TRUE WAY to write applications.  There are benefits to both approaches... The best practices in this talk apply to both patterns and we will discuss using both version of the application.
+: With microservices, you’re basically applying a UNIX approach, to application design.  Instead of having one “do everything” application, you break an application up into small, focused apps that do one thing well and know how to play nice with other applications.
+: Some of the benefits of this approach are independent deployments, easier maintenance, and faster compile times.  
 
-* URL
-- https://github.com/stevemcquaid/kubernetes-workshop#links
+* 2) Why do we need Kubernetes?
+- Let us first understand our application
+- How do we package and distribute our app?
+.image images/dependency_matrix_empty.png _ 900
+: Let’s pretend we have an application that’s more complex. This hypothetical app has a few standard components:  a db, a frontend, and some intermediate service.  How do we install each of these components, how will the different operating environments affect our application, and how will we output data for later consumption?
 
-* Overview of k8s
-- Abstract
-- kubectl
-** control plane
-  - kube-api
-  - kube-scheduler
-  - kube-controller-manager
-  - kubelet
-  - kube-proxy
+* 2) Why do we need Kubernetes?
+- Let us first understand our application
+- How do we package and distribute our app?
+.image images/dependency_matrix_filled.png _ 900
+
+: Look at all of the different combinations!  Managing this is complex -- and leads to the “It works on my machine” syndrome.  What if two instances of our database (which we downloaded and installed manually or with apt-get) use different versions?  What if those versions depend on different core libraries? What if Dev 1 Laptop has different runtime libs installed than our Production machines?
+: This leads to flaky, non-repeatable deployments.  
+: To combat this dependency hell, application isolation technologies were developed.
+
+* 2) Why do we need Kubernetes?
+- Let us first understand our application
+- How do we package and distribute our app?
+.image images/vm.png _ 900
+
+: We already solved this problems.  It’s called a VM. VM’s have their own OS, and their own carved out resources.
+: But under a VM we are basically carving up resources onto smaller machines. So if a VM isn’t using all of their allocated memory, it’s just idle, you can’t move it around. 
+: And you can overcommit resources, but you WILL run into issues. Guaranteed.
+: And since we’re loading an OS it takes a long time to get started. 
+: To summarize:  VMs give you *some* isolation, but they’re inefficient, highly coupled to the guest OS, and hard to manage. We can do better.
 
 
-* Setup kubectl
-* install
-* kubectl get namespaces
-* kubectl create -f
-* kubectl
-* multiple contexts
-* Hello World App Deployment
-* Networking
-* Overlay Network
-* Pods
-* Service
-* Kube-Proxy
-* Ingress
-* Ingress Controller
-* Load Balancing
-* Legacy App Migration
-* Monitoring
-* kops/kubeadm
-* Disaster Recovery Concerns
-* Schools of Thought
-* etcd
-* Extensibility
-* Monitor k8s API
-* k8s plugin
-* CRD
-* Office Hours for Custom Apps
-* Metrics/HPA
-
+* 2) Why do we need Kubernetes?
+- Let us first understand our application
+- How do we package and distribute our app?
+.image images/containers.png _ 900
+: Containers on the other hand share the same kernel, so that you can share resources as you need them.  Containers share the same operating system kernel 
+: Container images are stateless and contain all dependencies static, portable binaries constructed from layered filesystems
+: Containers provide isolation (from each other and from the host): Resources (CPU, RAM, Disk, etc.), Users, Filesystem, Network
+: Containers solve a lot of the problems with VMs and they are a fundamentally different way of deploying and managing your applications. And you can spin up very fast. 
+: So by using containers we no longer have to worry about which operating environment our containers are running in.  
 
 
 
+* 2) Why do we need Kubernetes?
+- How do we manage Containers?
+    for machine in cluster:
+      ssh machine 'docker run ... `?
+: It turns out that packaging and distributing is just a small part to managing applications at scale.  
+: We need to know that our container are up and running.  If they’re not we need to restart them.  We need to be able to access containers when they come online.  We need containers to be able to talk to each other.  We need a safe and secure way to handle sensitive data.  And more...
+
+* 2) Why do we need Kubernetes?
+- How do we handle:
+- Isolation: Keep jobs from interfering with each other
+- Scheduling: Where should my job be run?
+- Lifecycle: Keep my job running
+- Discovery: Where is my job now?
+- Constituency: Who is part of my job?
+- Scale-up: Making my jobs bigger or smaller
+- Auth{n,z}: Who can do things to my job?
+- Monitoring: What’s happening with my job?
+- Health: How is my job feeling?
+
+: That’s a lot of complexity. And is why we need Kubernetes.
+
+: Kubernetes abstracts the administrative tasks normally executed through automation, or even manually. Kubernetes automatically restarts containers that fail. It also replaces and reschedules containers when nodes die, and kills containers that don’t respond to your user-defined health checks. 
+: It can scale your application up and down with a simple command or via UI. Kubernetes progressively rolls out changes to your application or its configuration, while monitoring application health to ensure it doesn’t kill all your instances at the same time.
+
+: There is no need to modify your application to use an unfamiliar service discovery mechanism. Kubernetes gives pods their own IP addresses and a single DNS name for the service, and can automatically load-balance across them. You are able to deploy and update secrets and application configurations without rebuilding your image and without exposing secrets in your stack configuration. 
 
 
-
-
-
-
-
-
-* Kubernetes Core Concepts.
-
-- containers
-- pods
-- labels
-- services
-- Kuberbetes network model
-
-
-* Containers
-
-Unix processes not lightweight Virtual Machines
-
-- application + dependencies = image
-- Runtime environment (cgroups, namespaces, env vars)
-
-.image images/container.png
-
-* Containers
-
-Building container images.
-
-.code docker/large-dockerfile
-
-Total size: 500MB
-
-* Containers
-
-Building container images.
-
-- Build applications in a dedicated build container or CI
-- Ship build artifacts, not build environments
-
-Remix
-
-.code docker/small-dockerfile
-
-Total size: 4MB
-
-* Kubernetes
-
-Container management, scheduling, and service discovery.
-
-- API driven application management
-- Agents monitor endpoints for state changes (real-time)
-- Controllers enforce desired state
-- Labels identify resources (nodes, applications, services)
-
-* Kubernetes
-
-High level concepts
-
-- node
-- pod
-- scheduler
-- replication controller
-- service
+* 3) How does K8S work?
+* 3) How does K8S work?
+- Node
+- Pod
+- Control-plane
+- Deployment
+- Service
+- Secrets/ConfigMaps
 
 * Node
-
 Runs containers and proxies service requests.
-
 - docker
 - kubelet
-- proxy
-
+- kube-proxy
 .image images/kubernetes-nodes-2.png
 
 * Pod
-
 Represents a logical application.
-
 - One or more containers
 - Shared namespaces
+- One IP per pod (bridged network interface shared by containers)
+.image images/pod2.png _ 300
+: A pod is the unit of scheduling in Kubernetes. It is a resource envelope in which one or more containers run. Containers that are part of the same pod are guaranteed to be scheduled together onto the same machine, and can share state via local volumes.
 
-.image images/pod.png
+: Kubernetes is able to give every pod and service its own IP address. This removes the infrastructure complexity of managing ports, and allows developers to choose any ports they want rather than requiring their software to adapt to the ones chosen by the infrastructure. The latter point is crucial for making it easy to run off-the-shelf open-source applications on Kubernetes--pods can be treated much like VMs or physical hosts, with access to the full port space, oblivious to the fact that they may be sharing the same physical machine with other pods. 
 
-* Scheduler
 
+* Control-plane
 Schedules pods to run on nodes.
-
 - Global scheduler for long running jobs
 - Best fit chosen based on pod requirements
 - Pluggable
-
 .image images/kubernetes-scheduler.png
 
-* Replication Controller
-
+* Deployment
 Manages a replicated set of pods.
-
 - Creates pods from a template
 - Ensures desired number of pods are running
 - Online resizing 
-
 .image images/kubernetes-rc.png
 
-* Replication Controller
-
+* Deployment
 Manages a replicated set of pods.
-
 - Creates pods from a template
 - Ensures desired number of pods are running
 - Self-healing 
-
 .image images/kubernetes-rc-reschedule.png
 
 * Service
-
 Service discovery for pods.
-
 - Proxy runs on each node
 - Virtual IP per service (avoid port collisions)
 - Basic round-robin algorithm
 - Dynamic backends based on label queries 
+.image images/service.png _ 400
+: While we want to treat containers as cattle, and not care about them.  At some level we do care.  We don’t care which Pod serves up a particular request, but we have to get one of them to do it.  We want to be able to abstract this concept into something we care about - and we can use services.
+: Services denote names we give to certain collection of pods so that we can map a specific pod to serve any request of a specific type.
+: Kubernetes supports naming and load balancing using the service abstraction: a service has a name and maps to a dynamic set of pods defined by a label selector. Any container in the cluster can connect to the service using the service name. Under the covers, Kubernetes automatically load-balances connections to the service among the pods that match the label selector, and keeps track of where the pods are running as they get rescheduled over time due to failures.
 
-* Time to get Hands On
+
+* Secrets / Config Maps
+- Pod reference sensitive information (key/value pairs)
+- K8S can mounts volume/file with info
+- K8s can run container with environment variable (secret/configmap)
+.image images/secrets.png
+: So it would be nice not to have to bake sensitive credentials directly into our code or configuration. But as some point you have to. Secrets allows you to do it once, and not have do a lot of tap dancing to make it work. 
+: Secrets & config maps allow you to mount sensitive data as either a file in a volume, or directly into environment variables.
+: Define a resource with data, reference that resource in your pod. It will be mounted as a file or run as an environment variable in the docker container for you.
+: As you can see from this process -- the secrets (and config data if you’re using a ConfigMap) are available for the Pod’s containers *before* they are started.  Kubernetes handles all of this for you.
+
+* Components
+- kube-apiserver
+- kube-controller-manager
+- kube-scheduler
+- etcd
+- kubelet
+- kube-proxy
+- SDN plugin
+- kubectl (Command Line Interface to K8S)
+: There are a number of components that make up the kubernetes system
+: Control-plane, data store, node processes, required plugin, CLI
+
+* kube-apiserver
+- handles api requests
+.image images/control-plane.png _ 800
+: The primary control-plane system you will interact with
+
+* kube-scheduler
+- Manages workload distribution
+.image images/control-plane.png _ 800
+: Another element of control-plane critical to system function
+
+* kube-controller-manager
+- Assures desired state
+- Manages controllers
+.image images/control-plane.png _ 800
+: In Kubernetes, a controller is a control loop that watches the shared state of the cluster through the apiserver and makes changes attempting to move the current state towards the desired state.
+
+* etcd
+- Distributed K/V Store
+- Entire kubernetes state is stored here
+- Critical to k8s function
+.image images/control-plane.png _ 800
+: If k8s state is critical to your infra, then etcd is also critical. Different schools of thought here: etcd disaster recovery vs rebuild k8s state.
+: Not going to get too deep into etcd today, but there is tons of info online available
+
+* kubelet
+- An agent running on every node
+- "Supervisor" of docker for that node
+- Listens for updates from apiserver
+- Applies changes to node
+.image images/control-plane.png _ 600
+: This is the puppetier working on every node coordinating all the docker containers and really controlling how the compute and storage resources are interacting on the node.
+
+* kube-proxy
+- Handles network traffic on node
+- Writes IPTables rules to direct traffic accordingly
+- "Loadbalancing"
+.image images/control-plane.png _ 600
+: kube-proxy is an invisible magician that works in the shadows to make some of the abstractions work. Service IPs are one example of this.
+: Well discuss loadbalancing later since there are a couple tricky situations here
+
+* SDN Plugin
+- Ex: Calico, Flannel, Weave, etc
+- Routes, encapsulates (and possibly encrypts) your inter-node network traffic
+.image images/flannel.jpg _ 600
+: Various different options here. Personal preference and business requirements can dictate this choice
+
+* kubectl
+- Command Line Interface to K8S
+- CheatSheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+    kubectl get pods, svc, deployments, nodes, ingress -n default
+    kubectl get pods -o wide --all-namespaces
+    kubectl describe nodes
+    kubectl get services --sort-by=.metadata.name # List Services Sorted by Name
+    kubectl create -f flask.yaml
+    kubectl delete deployment flask
+    kubectl scale --replicas=3 -f foo.yaml
+    kubectl logs -f my-pod -c my-container 
+    kubectl run -i --tty busybox --image=busybox -- sh
+    kubectl exec my-pod -- ls /
+
+
+* Download Tools (9:45 - 10:00 AM)
+* Tools
+- minikube - https://kubernetes.io/docs/tasks/tools/install-minikube/
+- kubectl
+- bash/ssh client
+- git
+- docker
+
+* Morning Break (10:00 - 10:30 AM)
+
+* Kubectl + Multiple Contexts (10:30 - 11:00 AM)
+    kubectl config view
+    kubectl config get-clusters
+    kubectl config get-contexts
+    kubectl config use-context <default>
+
+* Hello World (11:00 - 11:15 AM)
+    kubectl run nginx --image=nginx:1.10.0
+    kubectl get pods
+    kubectl expose deployment nginx --port 80 --type LoadBalancer
+    kubectl get services
+    curl http://<Service_IP>:80
+    kubectl scale deployment nginx --replicas=4
+    kubectl get pods --watch
+
+* Networking: Ingresses + Traffic Routing (11:15 - 12:00 Noon)
+
+* Ingress
+: Typically, services and pods have IPs only routable by the cluster network. All traffic that ends up at an edge router is either dropped or forwarded elsewhere. Conceptually, this might look like #1
+
+1) Service behind firewall
+
+    internet
+       |
+    ------------
+    [ Services ]
+
+: Now if we look at #2 - An Ingress is a collection of rules that allow inbound connections to reach the cluster services. The piece of the system doing the reverse-proxying is the ingress controller itself. The abstract rules created for each service are the Ingress Resources.
+
+: This is another example of the modularity of the kubernetes API. You can define ingress resources for your applications and on the backend, swap out the implementation of your ingress controller for better performance, logging, functionality, etc. Nginx -> traefik, envoy, istio, etc. 
+
+2) Service behind firewall with exposed Ingress Controller
+
+    internet
+       |
+    [ Ingress ]
+    --|-----|--
+    [ Services ]
+
+: It can be configured to give services externally-reachable URLs, load balance traffic, terminate SSL, offer name based virtual hosting, and more. Users request ingress by POSTing the Ingress resource to the API server. An Ingress controller is responsible for fulfilling the Ingress, usually with a loadbalancer, though it may also configure your edge router or additional frontends to help handle the traffic in an HA manner.
+
+* Overlay Network
+- Overlay Network - https://blog.laputa.io/kubernetes-flannel-networking-6a1cb1f8ec7c
+- Pod IPs
+- Service IPs
+.image images/overlay.png _ 1000
+
+* Lunch: Hall B (12:00 - 1:00 PM)
+
+* Networking: Deploy Ingress Controller + Ingress Resource (1:00 - 1:30 PM)
+    kubectl apply -f demos/loadbalancing/traefik-common.yaml
+    kubectl apply -f demos/loadbalancing/traefik-ngrok.yaml
+    curl -sSL $(kubectl -n kube-system get svc ngrok -o template --template "{{.spec.clusterIP}}")/api/tunnels | jq  ".tunnels[].public_url" | sed 's/"//g;/http:/d'
+
+* Deploy your app on K8S + Other Topics (1:30 - 2:00 PM)
+- Commit to Deploy with K8s
+- Monitoring: Prometheus Operator
+- Large Cluster: Joining Forces
+
+* Break: Snacks and Sodas (2:00 - 3:00 PM)
+
+* Office Hours + Questions (3:00 - 4:30 PM)
+
+
+* Commit to Deploy with K8S
+- Rolling Updates https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
+- Canary Deployments with percentage or static load: https://github.com/retroryan/istio-workshop/
+
+* Monitoring: Prometheus Operator
+- https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/README.md
+
+* Large Cluster: Joining Forces
+    kubeadm join ...
+
+* Dockerfile Best Practices
+
+Unix processes not lightweight Virtual Machines
+- application + dependencies = image
+- Runtime environment (cgroups, namespaces, env vars)
+.image images/container.png
+
+* Dockerfile Best Practices
+Building container images.
+.code docker/large-dockerfile
+Total size: 500MB
+
+* Dockerfile Best Practicesners
+Building container images.
+- Build applications in a dedicated build container or CI
+- Ship build artifacts, not build environments
+Remix
+.code docker/small-dockerfile
+Total size: 4MB

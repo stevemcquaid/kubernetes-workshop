@@ -1,0 +1,17 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: slides
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: slides
+    spec:
+      containers:
+      - image: stevemcquaid/k8s-workshop:latest
+        imagePullPolicy: Always
+        name: slides
+        ports:
+        - containerPort: 80

@@ -14,6 +14,10 @@ run:
 shell:
 	@bash -x scripts/shell.sh
 
+deploy:
+	@bash -x scripts/deploy.sh
+
+
 help:
 	@printf "Available make targets:\n\n"
 	@awk '/^[a-zA-Z\-\_0-9%:\\]+:/ { \
