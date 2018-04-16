@@ -6,4 +6,3 @@
   3) https://github.com/stevemcquaid/python-flask-docker-hello-world.git
   4) https://github.com/googlecodelabs/orchestrate-with-kubernetes.git
   5) `minikube` - https://kubernetes.io/docs/tasks/tools/install-minikube/
-- docker
