@@ -3,7 +3,7 @@ set -ex
 
 source scripts/common.sh
 
-docker run -it -p 80:80 -v $PWD:/src --rm stevemcquaid/$PACKAGE_NAME:latest present -http '0.0.0.0:80' -notes
+docker run -it -p 80:80 -v $PWD:/go/src/app --rm stevemcquaid/$PACKAGE_NAME:latest present -http '0.0.0.0:80' -notes
 
 
 

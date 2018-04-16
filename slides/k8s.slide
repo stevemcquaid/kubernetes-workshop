@@ -1,21 +1,124 @@
-Intro to Kubernetes Workshop
+Kubernetes From Code to Deployment
 
-Kelsey Hightower
-CoreOS
-kelsey.hightower@coreos.com
-@kelseyhightower
+Steve McQuaid
+steve@stevemcquaid.com
+https://github.com/stevemcquaid
 
-* Course Outline
+: I am Steve McQuaid. I am a senior software engineer specializing in infrastructure engineering, specifically Kubernetes. Last year my wife and I relocated from the San Francisco Bay Area up to Carmel. More recently, I am actually taking the time right now to find the right new opportunity. So if you enjoy todays workshop, tell your boss!
 
-* Course Outline
+: And when I am not coding I enjoy whisky, running, golfing, and DJing. 
 
-Kubernetes Core Concepts.
+: Before we get super deep into technical stuff, let go around the room and say something about yourself... maybe what you do, where you're from, any hobbies you have, and the reason you chose this workshop or what you hope to get out of it.
+
+* Morning Agenda
+- 08:30   AM  (B)  Welcome/Intros
+- 09:00   AM  (L)  K8S Overview
+- 09:45   AM  (W)  Download Tools
+- 10:00  AM  (B)  Morning Break
+- 10:30  AM  (W)  Kubectl + Multiple Contexts
+- 11:00  AM  (W)  Hello World
+- 11:15  AM  (L)  Networking: Ingresses + Traffic Routing
+- 12:00  PM  (B)  Lunch: Hall B
+
+: Review the core concepts of Kubernetes
+: Everyone will download tools we need + break
+: Explore kubectl and usages
+: Deploy a hello world app on our personal clusters I've setup for you
+: Discuss networking in kubernetes
+
+* Afternoon Agenda
+- 01:00   PM  (W)  Networking: Deploy Ingress Controller + Ingress Resource
+- 01:30   PM  (W)  Large Cluster: Joining Forces
+- 02:00   PM  (B)  Break: Snacks and Sodas
+- 03:00   PM  (W)  Commit to Deploy with K8s
+- 03:30   PM  (W)  Monitoring: Prometheus + App Metrics
+- 04:00   PM  (W)  Office Hours + Questions
+- 04:30   PM  (B)  Wrap
+
+: After lunch we will deploy networking resources
+: Combine all of our clusters into a large single cluster to show failover
+: After a break, we will explore a developer workflow using kubernetes
+: Dig into how the CNCF 
+
+* Kubernetes (K8S) Overview (9:00 - 9:45AM)
+
+* Kubernetes (K8S) Overview
+- What is K8S?
+- Why do we need it?
+- How does it work?
+
+
+
+
+
+
+
+* Download Tools (9:45 - 10:00 AM)
+* Download Tools
+- kubectl
+- bash/ssh client for windows
+
+* URL
+- https://github.com/stevemcquaid/kubernetes-workshop#links
+
+* Overview of k8s
+- Abstract
+- kubectl
+** control plane
+  - kube-api
+  - kube-scheduler
+  - kube-controller-manager
+  - kubelet
+  - kube-proxy
+
+
+* Setup kubectl
+* install
+* kubectl get namespaces
+* kubectl create -f
+* kubectl
+* multiple contexts
+* Hello World App Deployment
+* Networking
+* Overlay Network
+* Pods
+* Service
+* Kube-Proxy
+* Ingress
+* Ingress Controller
+* Load Balancing
+* Legacy App Migration
+* Monitoring
+* kops/kubeadm
+* Disaster Recovery Concerns
+* Schools of Thought
+* etcd
+* Extensibility
+* Monitor k8s API
+* k8s plugin
+* CRD
+* Office Hours for Custom Apps
+* Metrics/HPA
+
+
+
+
+
+
+
+
+
+
+
+
+* Kubernetes Core Concepts.
 
 - containers
 - pods
 - labels
 - services
 - Kuberbetes network model
+
 
 * Containers
 
